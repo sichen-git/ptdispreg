@@ -77,6 +77,7 @@ library("tidyr")
 library("ggthemes")
 library("paletteer")
 library("scales")
+library("Cairo")
 
 # rel.bias.var.short=rel.bias.var[,-2]
 
@@ -89,17 +90,17 @@ pal=c(pal1,pal2,pal3)
 
 
 
-png(filename = "relbiastwocov.png", 
-    width = 750,           # Width in pixels
-    height = 700,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "relbiastwocov.png", 
+#     width = 750,           # Width in pixels
+#     height = 700,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
 
-bias.mean %>%
+p=bias.mean %>%
   pivot_longer( cols = c("a.bias", starts_with("beta"),starts_with("gamma"))) %>%
   ggplot(aes(x=a, y=value, colour=name), na.value = NA) +
   scale_colour_manual(name = "Details", values = pal
@@ -107,25 +108,26 @@ bias.mean %>%
   )+
   scale_x_continuous(name="Poisson-Tweedie parameter a")+
   scale_y_continuous(name="Percent", oob = oob_censor_any)+
-  geom_point() + theme_light()
-
-
+  geom_point() + theme_light() 
+ggsave(p,filename="relbiastwocov.pdf", 
+         width=5, height=4.5, units="in", device=cairo_pdf)
+  
 # Close the device to save the file
-dev.off()
+# dev.off()
 
 
 
-png(filename = "reldiffvartwocov.png", 
-    width = 750,           # Width in pixels
-    height = 700,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "reldiffvartwocov.png", 
+#     width = 750,           # Width in pixels
+#     height = 700,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
 
-rel.bias.var %>%
+p=rel.bias.var %>%
   pivot_longer( cols = c("a.bias", starts_with("beta"),starts_with("gamma"))) %>%
   ggplot(aes(x=a, y=value, colour=name)) +
   scale_colour_manual(name = "Details", values = pal
@@ -135,8 +137,10 @@ rel.bias.var %>%
   scale_y_continuous(name="Percent")+
   geom_point()+ theme_light()
 
-# Close the device to save the file
-dev.off()
+ggsave(p,filename="reldiffvartwocov.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
+# # Close the device to save the file
+# dev.off()
 
 
 
@@ -181,16 +185,16 @@ pal=c(pal1,pal2,pal3)
 #   geom_point()
 
 
-png(filename = "covprobtwocov.png", 
-    width = 750,           # Width in pixels
-    height = 700,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "covprobtwocov.png", 
+#     width = 750,           # Width in pixels
+#     height = 700,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
-coverage %>%
+p=coverage %>%
   pivot_longer( cols = c("a.cov", starts_with("beta"),starts_with("gamma"))) %>%
   ggplot(aes(x=a, y=value, colour=name)) +
   scale_colour_manual(name = "Details", values = pal
@@ -198,7 +202,10 @@ coverage %>%
   )+
   scale_x_continuous(name="Poisson-Tweedie parameter a")+
   scale_y_continuous(name="Coverage Probability")+
-  geom_point() + theme_light()
+  geom_point() + theme_light() 
+  
+ggsave(p,filename="covprobtwocov.pdf", 
+         width=5, height=4.5, units="in", device=cairo_pdf)
 
 # Close the device to save the file
-dev.off()
+# dev.off()

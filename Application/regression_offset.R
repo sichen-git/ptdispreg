@@ -4,9 +4,10 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 require(HelpersMG)
 library(stringr)
 library(kableExtra)
+library("Cairo")
 
-source("../Poisson-Tweedie/pt_base.R")
-source("../Poisson-Tweedie/ptreg_fun.R")
+source("../pt_functions/pt_base.R")
+source("../pt_functions/ptreg_fun.R")
 
 
 sizefactors=readRDS("../data/sizefactor.rds")
@@ -61,19 +62,21 @@ qresidptlye=pPTreg(model.nlm$estimate,Y, X, U, offsetb=offsetx, offsetg=offsetx)
 qresidptlyeb=pPTreg(model.nlm$estimate,Y+1, X, U, offsetb=offsetx, offsetg=offsetx)
 qqnorm(qnorm(qresidptlye),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
 
-png(filename = "qqlyemeanoffsetboth.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "qqlyemeanoffsetboth.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
+
+CairoPDF("qqlyemeanoffsetboth.pdf", 6, 6, bg="transparent")
 
 # Create your plot
 qqnorm(qnorm(qresidptlye),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
 
-# Close the device to save the file
+# # Close the device to save the file
 dev.off()
 
 
@@ -114,19 +117,20 @@ qresidptlyenbb=pnbreg(model.nlm.nb$estimate,Y+1, X, U, offsetb=offsetx, offsetg=
 qqnorm(qnorm(qresidptlyenb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
 
 
-png(filename = "qqlyemeanoffsetnbboth.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "qqlyemeanoffsetnbboth.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
+CairoPDF("qqlyemeanoffsetnbboth.pdf", 6, 6, bg="transparent")
 # Create your plot
 qqnorm(qnorm(qresidptlyenb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
 
-# Close the device to save the file
+# # Close the device to save the file
 dev.off()
 
 
@@ -179,19 +183,20 @@ qresidptlinb=pPTreg(model.nlm$estimate,Y+1, X, U, offsetb=offsetx, offsetg=offse
 qqnorm(qnorm(qresidptlin),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
 
 
-png(filename = "qqlinmeanoffsetboth.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "qqlinmeanoffsetboth.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
+CairoPDF("qqlinmeanoffsetboth.pdf", 6, 6, bg="transparent")
 
 # Create your plot
 qqnorm(qnorm(qresidptlin),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
 
-# Close the device to save the file
+# # Close the device to save the file
 dev.off()
 
 
@@ -234,22 +239,24 @@ qresidptlinnbb=pnbreg(model.nlm.nb$estimate,Y+1, X, U, offsetb=offsetx, offsetg=
 normresid=qnorm(qresidptlinnb)
 normresid[is.infinite(normresid)] <- NA
 
-qqnorm(normresid,main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
+# qqnorm(normresid,main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
 
 
-png(filename = "qqlinmeanoffsetnbboth.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "qqlinmeanoffsetnbboth.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
+
+CairoPDF("qqlinmeanoffsetnbboth.pdf", 6, 6, bg="transparent")
 
 # Create your plot
 qqnorm(normresid,main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
 
-# Close the device to save the file
+# # Close the device to save the file
 dev.off()
 
 

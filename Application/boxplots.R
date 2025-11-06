@@ -1,8 +1,10 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-library(dplyr)
-library(stringr)
-library(ggplot2)
+library("dplyr")
+library("stringr")
+library("ggplot2")
+library("Cairo")
+
 
 normalizedcounts=as.data.frame(readRDS("../data/normalizedcounts.rds"))
 X_cov=readRDS("../data/cov_X.rds")
@@ -47,116 +49,124 @@ linmeanssum=linmeansiv+linmeansiii
 
 genelin$expressionpointvarmean=(genelin$expression-linmeanssum)^2/linmeanssum
 
-png(filename = "lyeboxplot.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "lyeboxplot.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
-ggplot(genelye, aes(x=stage, y=expression))+  
+p=ggplot(genelye, aes(x=stage, y=expression))+  
   stat_boxplot(geom ='errorbar') +
   geom_boxplot()+
   xlab("Cancer Stage")+
   ylab("Expression Level")
+ggsave(p,filename="lyeboxplot.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
 
-# Close the device to save the file
-dev.off()
+# # Close the device to save the file
+# dev.off()
 
-png(filename = "linboxplot.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+# png(filename = "linboxplot.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
-ggplot(genelin, aes(x=stage, y=expression))+ 
+p=ggplot(genelin, aes(x=stage, y=expression))+ 
   stat_boxplot(geom ='errorbar') + 
   geom_boxplot()+
   xlab("Cancer Stage")+
   ylab("Expression Level")
-
-# Close the device to save the file
-dev.off()
-
-
-png(filename = "lyeboxplotxform.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
+ggsave(p,filename="linboxplot.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
+# # Close the device to save the file
+# dev.off()
 
 
-ggplot(genelye, aes(x=stage, y=xformexpression))+  
+# png(filename = "lyeboxplotxform.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
+
+
+p=ggplot(genelye, aes(x=stage, y=xformexpression))+  
   stat_boxplot(geom ='errorbar') +
   geom_boxplot()+
   xlab("Cancer Stage")+
   ylab("Expression Level ln(Y+1)")
+ggsave(p,filename="lyeboxplotxform.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
+# # Close the device to save the file
+# dev.off()
 
-# Close the device to save the file
-dev.off()
+# png(filename = "linboxplotxform.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
-png(filename = "linboxplotxform.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
-
-ggplot(genelin, aes(x=stage, y=xformexpression))+ 
+p=ggplot(genelin, aes(x=stage, y=xformexpression))+ 
   stat_boxplot(geom ='errorbar') + 
   geom_boxplot()+
   xlab("Cancer Stage")+
   ylab("Expression Level ln(Y+1)")
+ggsave(p,filename="linboxplotxform.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
+
+# # Close the device to save the file
+# dev.off()
 
 
-# Close the device to save the file
-dev.off()
 
+# png(filename = "lyeboxdisp.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
-
-png(filename = "lyeboxdisp.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
-
-ggplot(genelye, aes(x=stage, y=expressionpointvarmean))+  
+p=ggplot(genelye, aes(x=stage, y=expressionpointvarmean))+  
   stat_boxplot(geom ='errorbar') +
   geom_boxplot() +
   scale_y_continuous(limits = c(20,500))+
   labs(y=expression(paste("Gene Expression (X- ", bar("X"),")"^2,"/X")),x="Cancer Stage")
+ggsave(p,filename="lyeboxdisp.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
+# # Close the device to save the file
+# dev.off()
 
-# Close the device to save the file
-dev.off()
 
+# png(filename = "linboxdisp.png", 
+#     width = 550,           # Width in pixels
+#     height = 500,          # Height in pixels
+#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+#     pointsize = 12,        # Default pointsize for text
+#     bg = "white",          # Background color
+#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# )
 
-png(filename = "linboxdisp.png", 
-    width = 550,           # Width in pixels
-    height = 500,          # Height in pixels
-    units = "px",          # Units for width/height (can be "in", "cm", "mm")
-    pointsize = 12,        # Default pointsize for text
-    bg = "white",          # Background color
-    antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-)
-
-ggplot(genelin, aes(x=stage, y=expressionpointvarmean))+  
+p=ggplot(genelin, aes(x=stage, y=expressionpointvarmean))+  
   stat_boxplot(geom ='errorbar') +
   geom_boxplot()+
   scale_y_continuous(limits = c(0,500))+
   labs(y=expression(paste("Gene Expression (X- ", bar("X"),")"^2,"/X")),x="Cancer Stage")
-# Close the device to save the file
-dev.off()
+ggsave(p,filename="linboxdisp.pdf", 
+       width=5, height=4.5, units="in", device=cairo_pdf)
+# # Close the device to save the file
+# dev.off()
 
