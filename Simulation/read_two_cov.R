@@ -107,7 +107,7 @@ p=bias.mean %>%
                       ,labels = c("a", bquote("\u03B2" [0]),bquote("\u03B2" [1]),bquote("\u03B2" [2]),bquote("\u03B3" [0]),bquote("\u03B3" [1]),bquote("\u03B3" [2]))
   )+
   scale_x_continuous(name="Poisson-Tweedie parameter a")+
-  scale_y_continuous(name="Percent", oob = oob_censor_any)+
+  scale_y_continuous(name="Relative Bias (%)", oob = oob_censor_any)+
   geom_point() + theme_light() 
 ggsave(p,filename="relbiastwocov.pdf", 
          width=5, height=4.5, units="in", device=cairo_pdf)
@@ -134,7 +134,7 @@ p=rel.bias.var %>%
                       ,labels = c("a",bquote("\u03B2" [0]),bquote("\u03B2" [1]),bquote("\u03B2" [2]),bquote("\u03B3" [0]),bquote("\u03B3" [1]),bquote("\u03B3" [2]))
   )+
   scale_x_continuous(name="Poisson-Tweedie parameter a")+
-  scale_y_continuous(name="Percent")+
+  scale_y_continuous(name="Relative Difference (%)")+
   geom_point()+ theme_light()
 
 ggsave(p,filename="reldiffvartwocov.pdf", 
