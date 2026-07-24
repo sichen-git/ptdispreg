@@ -39,8 +39,10 @@ gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
+start_time <- Sys.time()
 model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
-
+end_time <- Sys.time()
+runtime.tmp=end_time - start_time
 
 SE.nlm =SEfromHessian(model.nlm$hessian)
 
