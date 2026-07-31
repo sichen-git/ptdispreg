@@ -1,10 +1,10 @@
-# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 # about 15h on sharcnet
 
 require(HelpersMG)
 
-source("../../pt_functions/pt_base.R")
-source("../../pt_functions/ptreg_fun.R")
+source("../pt_functions/pt_base.R")
+source("../pt_functions/ptreg_fun.R")
 
 
 samp=1000
