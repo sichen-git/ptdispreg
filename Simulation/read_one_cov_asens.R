@@ -95,18 +95,17 @@ for(j in 1:length(a.uniq)){
   results=rbind(results, reslt.tmp)
   
 
-  diffll_n2=(values_n2[,11]-values_mom[,11])<0.000001
-  diffll_n1=(values_n1[,11]-values_mom[,11])<0.000001
-  diffll_0=(values_0[,11]-values_mom[,11])<0.000001
-  diffll_05=(values_05[,11]-values_mom[,11])<0.000001
+  diffll_n2=abs(values_n2[,11]-values_mom[,11])<0.000001
+  diffll_n1=abs(values_n1[,11]-values_mom[,11])<0.000001
+  diffll_0=abs(values_0[,11]-values_mom[,11])<0.000001
+  diffll_05=abs(values_05[,11]-values_mom[,11])<0.000001
   diffll=sum(diffll_n2&diffll_n1&diffll_0&diffll_05)
-  fitting.tmp=min(diffll, 
-                  c(code_mom, code_n2, code_n1, code_0, code_05),
+  fitting.tmp=min(c(code_mom, code_n2, code_n1, code_0, code_05),
                   c(finnl_mom, finnl_n2, finnl_n1, finnl_0, finnl_05),
                   c(hess_mom, hess_n2, hess_n1, hess_0, hess_05),
                   c(finse_mom, finse_n2, finse_n1, finse_0, finse_05),
                   c(finpar_mom, finpar_n2, finpar_n1, finpar_0, finpar_05))
-  common.tmp=min(c(1000, ponepern2, ponepern1, poneper0, poneper05))
+  common.tmp=diffll
   
   fits=rbind(fits, c(a.uniq[j], fitting.tmp, common.tmp, 1000-fitting.tmp))
 }

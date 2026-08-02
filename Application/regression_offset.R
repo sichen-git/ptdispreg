@@ -5,6 +5,7 @@ require(HelpersMG)
 library(stringr)
 library(kableExtra)
 library("Cairo")
+require(matrixcalc)
 
 source("../pt_functions/pt_base.R")
 source("../pt_functions/ptreg_fun.R")
@@ -278,4 +279,204 @@ ks.test(qnorm(randlinres), "pnorm")
 ks.test(qnorm(randlinresnb), "pnorm")
 
 
+#multistart test
 
+
+#LY6E-DT gene
+
+geneid1=which(rownames(rawcounts)=="ENSG00000247317.3") #LY6E-DT
+
+Y1=matrix(rawcounts[geneid1,], ncol=1)
+
+
+
+Y=Y1
+X=cbind(1, X_cov, Z_cov)
+U=cbind(1, X_cov)
+
+
+beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+
+a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g1.mom=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=-2
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g1.n2=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=-1
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g1.n1=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=0
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g1.0=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=0.5
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g1.05=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+
+#LINC00674 gene 
+
+
+geneid2=which(str_starts(rownames(rawcounts), "ENSG00000237854")=="TRUE") #LINC00674
+
+Y2=matrix(rawcounts[geneid2,],ncol=1)
+
+
+
+Y=Y2
+X=cbind(1,X_cov,Z_cov)
+U=cbind(1,X_cov)
+
+beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+
+a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g2.mom=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=-2
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g2.n2=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=-1
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g2.n1=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=0
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g2.0=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+a.ini=0.5
+initial.v=c(a.ini,beta_ini,gamma_ini)
+
+model.nlm.g2.05=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+
+
+gene.table=data.frame(gene=c(rep("LY6E-DT", 5), rep("LINC00674", 5)), 
+                      start=rep(c("moment", "a=-2", "a=-1", "a=0", "a0.5"), 2),
+                    code=c(model.nlm.g1.mom$code,
+                           model.nlm.g1.n2$code,
+                           model.nlm.g1.n1$code,
+                           model.nlm.g1.0$code,
+                           model.nlm.g1.05$code,
+                           model.nlm.g2.mom$code,
+                           model.nlm.g2.n2$code,
+                           model.nlm.g2.n1$code,
+                           model.nlm.g2.0$code,
+                           model.nlm.g2.05$code),
+                    loglikhood=c(model.nlm.g1.mom$minimum,
+                                 model.nlm.g1.n2$minimum,
+                                 model.nlm.g1.n1$minimum,
+                                 model.nlm.g1.0$minimum,
+                                 model.nlm.g1.05$minimum,
+                                 model.nlm.g2.mom$minimum,
+                                 model.nlm.g2.n2$minimum,
+                                 model.nlm.g2.n1$minimum,
+                                 model.nlm.g2.0$minimum,
+                                 model.nlm.g2.05$minimum),
+                    hess=c(is.positive.definite(model.nlm.g1.mom$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g1.n2$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g1.n1$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g1.0$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g1.05$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g2.mom$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g2.n2$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g2.n1$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g2.0$hessian, tol=1e-8),
+                           is.positive.definite(model.nlm.g2.05$hessian, tol=1e-8)),
+                    finll=c(abs(model.nlm.g1.mom$minimum)<Inf,
+                            abs(model.nlm.g1.n2$minimum)<Inf,
+                            abs(model.nlm.g1.n1$minimum)<Inf,
+                            abs(model.nlm.g1.0$minimum)<Inf,
+                            abs(model.nlm.g1.05$minimum)<Inf,
+                            abs(model.nlm.g2.mom$minimum)<Inf,
+                            abs(model.nlm.g2.n2$minimum)<Inf,
+                            abs(model.nlm.g2.n1$minimum)<Inf,
+                            abs(model.nlm.g2.0$minimum)<Inf,
+                            abs(model.nlm.g2.05$minimum)<Inf),
+                    fines=c(all(model.nlm.g1.mom$estimate<Inf),
+                            all(model.nlm.g1.n2$estimate<Inf),
+                            all(model.nlm.g1.n1$estimate<Inf),
+                            all(model.nlm.g1.0$estimate<Inf),
+                            all(model.nlm.g1.05$estimate<Inf),
+                            all(model.nlm.g2.mom$estimate<Inf),
+                            all(model.nlm.g2.n2$estimate<Inf),
+                            all(model.nlm.g2.n1$estimate<Inf),
+                            all(model.nlm.g2.0$estimate<Inf),
+                            all(model.nlm.g2.05$estimate<Inf)),
+                   finsd=c(all(SEfromHessian(model.nlm.g1.mom$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g1.n2$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g1.n1$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g1.0$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g1.05$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g2.mom$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g2.n2$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g2.n1$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g2.0$hessian)<Inf),
+                           all(SEfromHessian(model.nlm.g2.05$hessian)<Inf)),
+                  commonopt=c("-",
+                              abs(model.nlm.g1.n2$minimum-model.nlm.g1.mom$minimum)<0.000001,
+                              abs(model.nlm.g1.n1$minimum-model.nlm.g1.mom$minimum)<0.000001,
+                              abs(model.nlm.g1.0$minimum-model.nlm.g1.mom$minimum)<0.000001,
+                              abs(model.nlm.g1.05$minimum-model.nlm.g1.mom$minimum)<0.000001,
+                              "-",
+                              abs(model.nlm.g2.n2$minimum-model.nlm.g2.mom$minimum)<0.000001,
+                              abs(model.nlm.g2.n1$minimum-model.nlm.g2.mom$minimum)<0.000001,
+                              abs(model.nlm.g2.0$minimum-model.nlm.g2.mom$minimum)<0.000001,
+                              abs(model.nlm.g2.05$minimum-model.nlm.g2.mom$minimum)<0.000001),
+                  optdiff=c("-",
+                            abs(model.nlm.g1.n2$minimum-model.nlm.g1.mom$minimum),
+                            abs(model.nlm.g1.n1$minimum-model.nlm.g1.mom$minimum),
+                            abs(model.nlm.g1.0$minimum-model.nlm.g1.mom$minimum),
+                            abs(model.nlm.g1.05$minimum-model.nlm.g1.mom$minimum),
+                            "-",
+                            abs(model.nlm.g2.n2$minimum-model.nlm.g2.mom$minimum),
+                            abs(model.nlm.g2.n1$minimum-model.nlm.g2.mom$minimum),
+                            abs(model.nlm.g2.0$minimum-model.nlm.g2.mom$minimum),
+                            abs(model.nlm.g2.05$minimum-model.nlm.g2.mom$minimum))
+)
+
+estimates=as.data.frame(cbind(c(rep("LY6E-DT", 5), rep("LINC00674", 5)), 
+                              rep(c("moment", "a=-2", "a=-1", "a=0", "a0.5"), 2)
+                              , rbind(model.nlm.g1.mom$estimate,
+                                model.nlm.g1.n2$estimate,
+                                model.nlm.g1.n1$estimate,
+                                model.nlm.g1.0$estimate,
+                                model.nlm.g1.05$estimate,
+                                model.nlm.g2.mom$estimate,
+                                model.nlm.g2.n2$estimate,
+                                model.nlm.g2.n1$estimate,
+                                model.nlm.g2.0$estimate,
+                                model.nlm.g2.05$estimate)))
+colnames(estimates)=c("gene", "start", "a", "b0", "b1", "b2", "b3", "g0", "g1")
+
+
+library(kableExtra)
+
+gene.table%>%
+kable("latex", escape = F, longtable=F,
+      caption="",
+      booktabs = T, linesep = "", align = "c") %>%
+  collapse_rows(columns = 1) %>%
+  kable_styling(latex_options =c("HOLD_position" ))
+
+estimates%>%
+  kable("latex", escape = F, longtable=F,
+        caption="",
+        booktabs = T, linesep = "", align = "c") %>%
+  collapse_rows(columns = 1) %>%
+  kable_styling(latex_options =c("HOLD_position" ))
