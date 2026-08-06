@@ -49,7 +49,7 @@ SE.nlm =SEfromHessian(model.nlm$hessian)
 
 
 tval.nlm=model.nlm$estimate/SE.nlm
-modelpval.nlm=2*pt(-abs(tval.nlm),df=length(Y)-1)
+modelpval.nlm=2*pnorm(-abs(tval.nlm))
 
 mytable.nlm=cbind(model.nlm$estimate,SE.nlm,tval.nlm,modelpval.nlm)
 
@@ -101,7 +101,7 @@ SE.nlm.nb =SEfromHessian(model.nlm.nb$hessian)
 
 
 tval.nlm.nb=model.nlm.nb$estimate/SE.nlm.nb
-modelpval.nlm.nb=2*pt(-abs(tval.nlm.nb),df=length(Y)-1)
+modelpval.nlm.nb=2*pnorm(-abs(tval.nlm.nb))
 
 mytable.nlm.nb=cbind(model.nlm.nb$estimate,SE.nlm.nb,tval.nlm.nb,modelpval.nlm.nb)
 
@@ -169,7 +169,7 @@ SE.nlm =SEfromHessian(model.nlm$hessian)
 
 
 tval.nlm=model.nlm$estimate/SE.nlm
-modelpval.nlm=2*pt(-abs(tval.nlm),df=length(Y)-1)
+modelpval.nlm=2*pnorm(-abs(tval.nlm))
 
 mytable.nlm=cbind(model.nlm$estimate,SE.nlm,tval.nlm,modelpval.nlm)
 
@@ -224,7 +224,7 @@ SE.nlm.nb =SEfromHessian(model.nlm.nb$hessian)
 
 
 tval.nlm.nb=model.nlm.nb$estimate/SE.nlm.nb
-modelpval.nlm.nb=2*pt(-abs(tval.nlm.nb),df=length(Y)-1)
+modelpval.nlm.nb=2*pnorm(-abs(tval.nlm.nb))
 
 mytable.nlm.nb=cbind(model.nlm.nb$estimate,SE.nlm.nb,tval.nlm.nb,modelpval.nlm.nb)
 
@@ -451,7 +451,7 @@ gene.table=data.frame(gene=c(rep("LY6E-DT", 5), rep("LINC00674", 5)),
 )
 
 estimates=as.data.frame(cbind(c(rep("LY6E-DT", 5), rep("LINC00674", 5)), 
-                              rep(c("moment", "a=-2", "a=-1", "a=0", "a0.5"), 2)
+                              rep(c("moment", "a=-2", "a=-1", "a=0", "a=0.5"), 2)
                               , rbind(model.nlm.g1.mom$estimate,
                                 model.nlm.g1.n2$estimate,
                                 model.nlm.g1.n1$estimate,
