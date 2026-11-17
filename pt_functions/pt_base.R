@@ -97,7 +97,7 @@ dPT.abc=function(x=0,a=0.5,b=1,c=0.5){
 dPT.muphi=function(x=0,a=0.5,mu=1, d=1.5){
   c=ifelse(a==1,1,(d-1)/(d-a))
   b=mu*(1-c)^(1-a)/c
-
+  if(a==1&&D>1){return(rep(0, length(x)))}
   p=dPTzero(max(x),a,b,c)
   return(p[x+1])
 }
@@ -124,6 +124,7 @@ pPT.abc=function(q,a=0.5,b=1,c=0.5){
 pPT.muphi=function(q,a=0.5,mu=1, d=1.5){
   c=ifelse(a==1,1,(d-1)/(d-a))
   b=mu*(1-c)^(1-a)/c
+  if(a==1&&D>1){return(rep(0, length(q)))}
   if(min(q)<0){
     return("error: q must be non-negative integer")
   }
@@ -135,8 +136,8 @@ pPT.muphi=function(q,a=0.5,mu=1, d=1.5){
 }
 
 #test
-pPT.abc(0:5, 1) 
-ppois(0:5,lambda=1*0.5)
+# pPT.abc(0:5, 1) 
+# ppois(0:5,lambda=1*0.5)
 
 qPT.abc=function(p,a=0.5,b=1,c=0.5){
   if(sum(p<0 | p>1)>0){

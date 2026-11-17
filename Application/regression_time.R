@@ -37,7 +37,7 @@ gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 
 SE.nlm =SEfromHessian(model.nlm$hessian)
@@ -65,7 +65,7 @@ gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 
 SE.nlm =SEfromHessian(model.nlm$hessian)
@@ -84,7 +84,7 @@ for(i in 1:20){
   a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
   initial.v=c(a.ini,beta_ini,gamma_ini)
   
-  model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+  model.nlm=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
   
   
   SE.nlm =SEfromHessian(model.nlm$hessian)
@@ -119,7 +119,7 @@ for(i in 1:20){
   a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
   initial.v=c(a.ini,beta_ini,gamma_ini)
   
-  model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+  model.nlm=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
   
   
   SE.nlm =SEfromHessian(model.nlm$hessian)

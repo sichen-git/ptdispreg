@@ -38,10 +38,10 @@ for(j in a){
     
     a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
     beta_ini=c(log(mean(Y), base = exp(1)), 0)
-    gamma_ini=c(log((var(Y)/mean(Y)-1), base = exp(1)), 0)
+    gamma_ini=c(log((var(Y)/mean(Y)), base = exp(1)), 0)
     initial.v=c(a.ini,beta_ini,gamma_ini)
     
-    model.disp.tmp=optim(initial.v, fn=pt_lik, method="Nelder-Mead", y=Y, X=X, U=U, hessian=F, control = list(maxit = 20000))
+    model.disp.tmp=optim(initial.v, fn=pt_lik_app, method="Nelder-Mead", y=Y, X=X, U=U, hessian=F, control = list(maxit = 20000))
     hess.tmp=hessian(pt_lik, model.disp.tmp$par, y=Y, X=X, U=U)
     
     if(any(is.na(hess.tmp))){

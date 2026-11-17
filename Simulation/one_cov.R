@@ -34,11 +34,11 @@ for(j in a)
     
     a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
     beta_ini=c(log(mean(Y), base = exp(1)), 0)
-    gamma_ini=c(log((var(Y)/mean(Y)-1), base = exp(1)), 0)
+    gamma_ini=c(log((var(Y)/mean(Y)), base = exp(1)), 0)
     initial.v=c(a.ini,beta_ini,gamma_ini)
     
     
-    model.disp.tmp=nlm(pt_lik, initial.v, y=Y, X=X, U=U, hessian=T)
+    model.disp.tmp=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, hessian=T)
     
     var.tmp=SEfromHessian(model.disp.tmp$hessian)^2
     

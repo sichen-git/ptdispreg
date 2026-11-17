@@ -35,13 +35,13 @@ U=cbind(1, X_cov)
 # beta_ini=glm.fit(X,Y, family = poisson())$coefficients
 # gamma_ini=glm.fit(U,Y, family = poisson())$coefficients
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
 start_time <- Sys.time()
-model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 end_time <- Sys.time()
 runtime.tmp=end_time - start_time
 
@@ -59,28 +59,28 @@ colnames(mytable.nlm)=c("MLE","SE","t-val","p-val")
 mytable.nlm%>%
   kbl( format = "latex",booktabs = T) %>%
   kable_styling(latex_options="scale_down")
-
-
+# 
+# 
 qresidptlye=pPTreg(model.nlm$estimate,Y, X, U, offsetb=offsetx, offsetg=offsetx)
-qresidptlyeb=pPTreg(model.nlm$estimate,Y+1, X, U, offsetb=offsetx, offsetg=offsetx)
-qqnorm(qnorm(qresidptlye),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
-
-# png(filename = "qqlyemeanoffsetboth.png", 
-#     width = 550,           # Width in pixels
-#     height = 500,          # Height in pixels
-#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
-#     pointsize = 12,        # Default pointsize for text
-#     bg = "white",          # Background color
-#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-# )
-
-CairoPDF("qqlyemeanoffsetboth.pdf", 6, 6, bg="transparent")
-
-# Create your plot
-qqnorm(qnorm(qresidptlye),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
-
-# # Close the device to save the file
-dev.off()
+qresidptlyeb=as.numeric(ifelse(Y > 0, pPTreg(model.nlm$estimate,Y-1, X, U, offsetb=offsetx, offsetg=offsetx), 0))
+# qqnorm(qnorm(qresidptlye),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
+# 
+# # png(filename = "qqlyemeanoffsetboth.png", 
+# #     width = 550,           # Width in pixels
+# #     height = 500,          # Height in pixels
+# #     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+# #     pointsize = 12,        # Default pointsize for text
+# #     bg = "white",          # Background color
+# #     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# # )
+# 
+# CairoPDF("qqlyemeanoffsetboth.pdf", 6, 6, bg="transparent")
+# 
+# # Create your plot
+# qqnorm(qnorm(qresidptlye),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
+# 
+# # # Close the device to save the file
+# dev.off()
 
 
 #NB
@@ -89,7 +89,7 @@ dev.off()
 # beta_ini=glm.fit(X,Y, family = poisson())$coefficients
 # gamma_ini=glm.fit(U,Y, family = poisson())$coefficients
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 
 initial.v=c(beta_ini,gamma_ini)
@@ -114,27 +114,27 @@ mytable.nlm.nb%>%
   kable_styling(latex_options="scale_down")
 
 
-
+# 
 qresidptlyenb=pnbreg(model.nlm.nb$estimate,Y, X, U, offsetb=offsetx, offsetg=offsetx)
-qresidptlyenbb=pnbreg(model.nlm.nb$estimate,Y+1, X, U, offsetb=offsetx, offsetg=offsetx)
-qqnorm(qnorm(qresidptlyenb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
-
-
-# png(filename = "qqlyemeanoffsetnbboth.png", 
-#     width = 550,           # Width in pixels
-#     height = 500,          # Height in pixels
-#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
-#     pointsize = 12,        # Default pointsize for text
-#     bg = "white",          # Background color
-#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-# )
-
-CairoPDF("qqlyemeanoffsetnbboth.pdf", 6, 6, bg="transparent")
-# Create your plot
-qqnorm(qnorm(qresidptlyenb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
-
-# # Close the device to save the file
-dev.off()
+qresidptlyenbb=as.numeric(ifelse(Y > 0,pnbreg(model.nlm.nb$estimate,Y-1, X, U, offsetb=offsetx, offsetg=offsetx), 0))
+# qqnorm(qnorm(qresidptlyenb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
+# 
+# 
+# # png(filename = "qqlyemeanoffsetnbboth.png", 
+# #     width = 550,           # Width in pixels
+# #     height = 500,          # Height in pixels
+# #     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+# #     pointsize = 12,        # Default pointsize for text
+# #     bg = "white",          # Background color
+# #     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# # )
+# 
+# CairoPDF("qqlyemeanoffsetnbboth.pdf", 6, 6, bg="transparent")
+# # Create your plot
+# qqnorm(qnorm(qresidptlyenb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
+# 
+# # # Close the device to save the file
+# dev.off()
 
 
 
@@ -157,12 +157,12 @@ U=cbind(1,X_cov)
 # beta_ini=glm.fit(X,Y, family = poisson())$coefficients
 # gamma_ini=glm.fit(U,Y, family = poisson())$coefficients
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 
 SE.nlm =SEfromHessian(model.nlm$hessian)
@@ -180,27 +180,27 @@ mytable.nlm%>%
   kbl( format = "latex",booktabs = T) %>%
   kable_styling(latex_options="scale_down")
 
-
+# 
 qresidptlin=pPTreg(model.nlm$estimate,Y, X, U, offsetb=offsetx, offsetg=offsetx)
-qresidptlinb=pPTreg(model.nlm$estimate,Y+1, X, U, offsetb=offsetx, offsetg=offsetx)
-qqnorm(qnorm(qresidptlin),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
-
-
-# png(filename = "qqlinmeanoffsetboth.png", 
-#     width = 550,           # Width in pixels
-#     height = 500,          # Height in pixels
-#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
-#     pointsize = 12,        # Default pointsize for text
-#     bg = "white",          # Background color
-#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-# )
-CairoPDF("qqlinmeanoffsetboth.pdf", 6, 6, bg="transparent")
-
-# Create your plot
-qqnorm(qnorm(qresidptlin),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
-
-# # Close the device to save the file
-dev.off()
+qresidptlinb=as.numeric(ifelse(Y > 0, pPTreg(model.nlm$estimate,Y-1, X, U, offsetb=offsetx, offsetg=offsetx), 0))
+# qqnorm(qnorm(qresidptlin),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
+# 
+# 
+# # png(filename = "qqlinmeanoffsetboth.png", 
+# #     width = 550,           # Width in pixels
+# #     height = 500,          # Height in pixels
+# #     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+# #     pointsize = 12,        # Default pointsize for text
+# #     bg = "white",          # Background color
+# #     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# # )
+# CairoPDF("qqlinmeanoffsetboth.pdf", 6, 6, bg="transparent")
+# 
+# # Create your plot
+# qqnorm(qnorm(qresidptlin),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
+# 
+# # # Close the device to save the file
+# dev.off()
 
 
 
@@ -212,7 +212,7 @@ dev.off()
 # beta_ini=glm.fit(X,Y, family = poisson())$coefficients
 # gamma_ini=glm.fit(U,Y, family = poisson())$coefficients
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 
 initial.v=c(beta_ini,gamma_ini)
@@ -236,40 +236,42 @@ mytable.nlm.nb%>%
   kbl( format = "latex",booktabs = T) %>%
   kable_styling(latex_options="scale_down")
 
-
+# 
 qresidptlinnb=pnbreg(model.nlm.nb$estimate,Y, X, U, offsetb=offsetx, offsetg=offsetx)
-qresidptlinnbb=pnbreg(model.nlm.nb$estimate,Y+1, X, U, offsetb=offsetx, offsetg=offsetx)
-normresid=qnorm(qresidptlinnb)
-normresid[is.infinite(normresid)] <- NA
-
+qresidptlinnbb=as.numeric(ifelse(Y > 0, pnbreg(model.nlm.nb$estimate,Y-1, X, U, offsetb=offsetx, offsetg=offsetx), 0))
+# normresid=qnorm(qresidptlinnb)
+# normresid[is.infinite(normresid)] <- NA
+# 
+# # qqnorm(normresid,main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
+# 
+# 
+# # png(filename = "qqlinmeanoffsetnbboth.png", 
+# #     width = 550,           # Width in pixels
+# #     height = 500,          # Height in pixels
+# #     units = "px",          # Units for width/height (can be "in", "cm", "mm")
+# #     pointsize = 12,        # Default pointsize for text
+# #     bg = "white",          # Background color
+# #     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
+# # )
+# 
+# CairoPDF("qqlinmeanoffsetnbboth.pdf", 6, 6, bg="transparent")
+# 
+# # Create your plot
 # qqnorm(normresid,main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
-
-
-# png(filename = "qqlinmeanoffsetnbboth.png", 
-#     width = 550,           # Width in pixels
-#     height = 500,          # Height in pixels
-#     units = "px",          # Units for width/height (can be "in", "cm", "mm")
-#     pointsize = 12,        # Default pointsize for text
-#     bg = "white",          # Background color
-#     antialias = "cleartype" # Antialiasing for text (e.g., "cleartype", "gray")
-# )
-
-CairoPDF("qqlinmeanoffsetnbboth.pdf", 6, 6, bg="transparent")
-
-# Create your plot
-qqnorm(normresid,main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
-
-# # Close the device to save the file
-dev.off()
+# 
+# # # Close the device to save the file
+# dev.off()
 
 
 
 set.seed(123)
 
-randlyeres=runif(length(qresidptlye),min=qresidptlye,max=qresidptlyeb)
-randlyeresnb=runif(length(qresidptlyenb),min=qresidptlyenb,max=qresidptlyenbb)
-randlinres=runif(length(qresidptlin),min=qresidptlin,max=qresidptlinb)
-randlinresnb=runif(length(qresidptlinnb),min=qresidptlinnb,max=qresidptlinnbb)
+
+randlyeres=runif(length(qresidptlye),min=qresidptlyeb,max=qresidptlye)
+randlyeresnb=runif(length(qresidptlyenb),min=qresidptlyenbb,max=qresidptlyenb)
+randlinres=runif(length(qresidptlin),min=qresidptlinb,max=qresidptlin)
+randlinresnb=runif(length(qresidptlinnb),min=qresidptlinnbb,max=qresidptlinnb)
+
 
 
 ks.test(qnorm(randlyeres), "pnorm")
@@ -278,6 +280,36 @@ ks.test(qnorm(randlyeresnb), "pnorm")
 ks.test(qnorm(randlinres), "pnorm")
 ks.test(qnorm(randlinresnb), "pnorm")
 
+CairoPDF("qqlyemeanoffsetboth.pdf", 6, 6, bg="transparent")
+
+# Create your plot
+qqnorm(qnorm(randlyeres),main=expression(paste(italic("LY6E-DT")," / PT Fit")));abline(0,1,col=2)
+
+# # Close the device to save the file
+dev.off()
+
+CairoPDF("qqlyemeanoffsetnbboth.pdf", 6, 6, bg="transparent")
+# Create your plot
+qqnorm(qnorm(randlyeresnb),main=expression(paste(italic("LY6E-DT")," / NB Fit")));abline(0,1,col=2)
+
+# # Close the device to save the file
+dev.off()
+
+CairoPDF("qqlinmeanoffsetboth.pdf", 6, 6, bg="transparent")
+
+# Create your plot
+qqnorm(qnorm(randlinres),main=expression(paste(italic("LINC00674")," / PT Fit")));abline(0,1,col=2)
+
+# # Close the device to save the file
+dev.off()
+
+CairoPDF("qqlinmeanoffsetnbboth.pdf", 6, 6, bg="transparent")
+
+# Create your plot
+qqnorm(qnorm(randlinresnb),main=expression(paste(italic("LINC00674")," / NB Fit")));abline(0,1,col=2)
+
+# # Close the device to save the file
+dev.off()
 
 #multistart test
 
@@ -296,32 +328,32 @@ U=cbind(1, X_cov)
 
 
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g1.mom=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g1.mom=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=-2
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g1.n2=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g1.n2=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=-1
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g1.n1=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g1.n1=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=0
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g1.0=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g1.0=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=0.5
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g1.05=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g1.05=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 
 #LINC00674 gene 
@@ -338,32 +370,32 @@ X=cbind(1,X_cov,Z_cov)
 U=cbind(1,X_cov)
 
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g2.mom=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g2.mom=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=-2
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g2.n2=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g2.n2=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=-1
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g2.n1=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g2.n1=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=0
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g2.0=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g2.0=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 a.ini=0.5
 initial.v=c(a.ini,beta_ini,gamma_ini)
 
-model.nlm.g2.05=nlm(pt_lik, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
+model.nlm.g2.05=nlm(pt_lik_app, initial.v, y=Y, X=X, U=U, offsetb=offsetx, offsetg=offsetx, hessian=T)
 
 
 gene.table=data.frame(gene=c(rep("LY6E-DT", 5), rep("LINC00674", 5)), 
