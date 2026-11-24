@@ -32,7 +32,7 @@ X=cbind(1, X_cov, Z_cov)
 U=cbind(1, X_cov)
 
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
@@ -60,7 +60,7 @@ U=cbind(1,X_cov)
 
 
 beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
 
 a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
 initial.v=c(a.ini,beta_ini,gamma_ini)
@@ -79,7 +79,7 @@ for(i in 1:20){
 
   start_time <- Sys.time()
   beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-  gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+  gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
   
   a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
   initial.v=c(a.ini,beta_ini,gamma_ini)
@@ -114,7 +114,7 @@ for(i in 1:20){
   
   start_time <- Sys.time()
   beta_ini=c(log(mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]),rep(0,  dim(Z_cov)[2]))
-  gamma_ini=c(log(var(Y)/mean(Y)-1, base= exp(1)), rep(0, dim(X_cov)[2]))
+  gamma_ini=c(log(var(Y)/mean(Y), base= exp(1)), rep(0, dim(X_cov)[2]))
   
   a.ini=max(a.moment(skewness(Y),mean(Y),var(Y)/mean(Y)),-5)
   initial.v=c(a.ini,beta_ini,gamma_ini)
