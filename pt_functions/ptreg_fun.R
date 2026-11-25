@@ -22,7 +22,7 @@ rpt_reg_disp <- function(a, beta, gamma, X, U,  offsetb = NULL, offsetg = NULL) 
 # pt likelihood
 pt_lik_app <- function(theta, y, X, U,  offsetb = NULL, offsetg = NULL) {
   a=theta[1]
-  if(a>1){return(Inf)}
+  if(a>=1){return(Inf)}
   else{
     lb=dim(X)[2]
     lg=dim(U)[2]
@@ -35,8 +35,7 @@ pt_lik_app <- function(theta, y, X, U,  offsetb = NULL, offsetg = NULL) {
     mu <- exp(eta)
     d <- exp(iota)
     mind=min(d)
-    maxd=max(d)
-    if(mind<1||(a<1&&mind==1)||(a==1&&maxd>1)){return(Inf)}
+    if(mind<=1){return(Inf)}
     return( -sum(log(mapply(dPT.muphi,x=y, a=a, mu=mu, d=d)) ))
   }
 }
@@ -45,7 +44,7 @@ pt_lik_app <- function(theta, y, X, U,  offsetb = NULL, offsetg = NULL) {
 # for pt calculating regression CMF
 pPTreg_app <- function(theta, y, X, U,  offsetb = NULL, offsetg = NULL) {
   a=theta[1]
-  if(a>1){return(Inf)}
+  if(a>=1){return(Inf)}
   lb=dim(X)[2]
   lg=dim(U)[2]
   beta=matrix(theta[2:(lb+1)],ncol=1)
@@ -56,8 +55,7 @@ pPTreg_app <- function(theta, y, X, U,  offsetb = NULL, offsetg = NULL) {
   if(!is.null(offsetg)) {iota = iota + log(offsetg, base = exp(1))}
   mu <- exp(eta)
   mind=min(d)
-  maxd=max(d)
-  if(mind<1||(a<1&&mind==1)||(a==1&&maxd>1)){return(Inf)}
+  if(mind<=1){return(Inf)}
   return( (mapply(pPT.muphi,q=y, a=a, mu=mu, d=d)))
 }
 
